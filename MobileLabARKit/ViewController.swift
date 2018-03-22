@@ -16,6 +16,11 @@ let ModelAssets: [(name: String, nodeName: String)] = [
     ("2D Plane", "plane"),
     ("Box", "box")]
 
+let PlacementModes: [(name: String, mode: Int)] = [
+    ("Photo",  0),
+    ("Space",  1),
+    ("Plane", 2)]
+
 
 class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
 
@@ -24,12 +29,15 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     @IBOutlet weak var sessionInfoView: UIView!
     @IBOutlet weak var modeAssetButtonView: UIView!
     @IBOutlet weak var undoButtonView: UIView!
+    @IBOutlet weak var placementModeButtonView: UIView!
     @IBOutlet weak var sessionInfoLabel: UILabel!
     @IBOutlet weak var modelAssetButton: UIButton!
 
     // Structure for cycling through model assets.
     var modelAssets = CycleArray(ModelAssets)
-    
+
+    var placementModes = CycleArray(PlacementModes)
+
     var currentModelAsset: SCNNode!
 
     var modelsInScene = [SCNNode]()
@@ -103,40 +111,64 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
     @objc
     func handleTap(_ recognizer: UITapGestureRecognizer) {
         let location = recognizer.location(in: sceneView)
-        
-        // When tapped on the object, call the object's method to react on it
-        let sceneHitTestResult = sceneView.hitTest(location, options: nil)
-        if !sceneHitTestResult.isEmpty {
-            print("Hit Object")
-            return
-        }
-        
-        // When tapped on a plane, reposition the content
-//        let arHitTestResult = sceneView.hitTest(location, types: .existingPlane)
-//        if !arHitTestResult.isEmpty {
-//            let hit = arHitTestResult.first!
-//            node.position = SCNVector3Make(hit.worldTransform.columns.3.x,
-//                                           hit.worldTransform.columns.3.y,
-//                                           hit.worldTransform.columns.3.z)
-//        }
-        
-        
         guard let currentFrame = sceneView.session.currentFrame else {
             return
         }
-        
-        var translation = matrix_identity_float4x4
-        translation.columns.3.z = -0.1
 
-        let modelAsset = currentModelAsset.clone() as SCNNode
+        // When tapped on the object, call the object's method to react on it
+//        let sceneHitTestResult = sceneView.hitTest(location, options: nil)
+//        if !sceneHitTestResult.isEmpty {
+//            print("Hit Object")
+//            return
+//        }
 
-        let currentScale = modelAsset.simdScale
-        modelAsset.simdTransform = matrix_multiply(currentFrame.camera.transform, translation)
-        modelAsset.simdScale = currentScale
         
-        sceneView.scene.rootNode.addChildNode(modelAsset);
-        
-        modelsInScene.append(modelAsset)
+        if placementModes.currentElement!.mode == 0 {
+            let imagePlane = SCNPlane(width: sceneView.bounds.width / 6000,
+                                      height: sceneView.bounds.height / 6000)
+            
+            imagePlane.firstMaterial?.diffuse.contents = sceneView.snapshot()
+            imagePlane.firstMaterial?.lightingModel = .constant
+
+            let planeNode = SCNNode(geometry: imagePlane)
+            sceneView.scene.rootNode.addChildNode(planeNode)
+
+            var translation = matrix_identity_float4x4
+            translation.columns.3.z = -0.1
+            planeNode.simdTransform = matrix_multiply(currentFrame.camera.transform, translation)
+            
+            modelsInScene.append(planeNode)
+            
+        } else if placementModes.currentElement!.mode == 1 {
+            var translation = matrix_identity_float4x4
+            translation.columns.3.z = -0.1
+            
+            let modelAsset = currentModelAsset.clone() as SCNNode
+            
+            let currentScale = modelAsset.simdScale
+            modelAsset.simdTransform = matrix_multiply(currentFrame.camera.transform, translation)
+            modelAsset.simdScale = currentScale
+            
+            sceneView.scene.rootNode.addChildNode(modelAsset);
+            
+            modelsInScene.append(modelAsset)
+        } else if placementModes.currentElement!.mode == 2 {
+            // When tapped on a plane, reposition the content
+            let arHitTestResult = sceneView.hitTest(location, types: .existingPlaneUsingExtent)
+            if !arHitTestResult.isEmpty {
+                let hit = arHitTestResult.first!
+                let modelAsset = currentModelAsset.clone() as SCNNode
+                
+                modelAsset.position = SCNVector3Make(hit.worldTransform.columns.3.x,
+                                                     hit.worldTransform.columns.3.y,
+                                                     hit.worldTransform.columns.3.z)
+                
+                sceneView.scene.rootNode.addChildNode(modelAsset)
+
+                modelsInScene.append(modelAsset)
+
+            }
+        }
     }
     
     
@@ -155,12 +187,21 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
         }
     }
     
+    @IBAction func handleModeButton(_ sender: UIButton) {
+
+        let placementMode = placementModes.cycle()!
+
+        sender.setTitle(placementMode.name, for: .normal)
+    }
+
+
     @IBAction func handleToggleMenuButton(_ sender: UIButton) {
         isMenuHidden = !isMenuHidden
 
         sessionInfoView.isHidden = isMenuHidden
         modeAssetButtonView.isHidden = isMenuHidden
         undoButtonView.isHidden = isMenuHidden
+        placementModeButtonView.isHidden = isMenuHidden
     }
     
     // MARK: - ARSCNViewDelegate

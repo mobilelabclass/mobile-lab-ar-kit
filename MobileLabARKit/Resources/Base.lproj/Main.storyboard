@@ -130,6 +130,40 @@
                                     <action selector="handleToggleMenuButton:" destination="BV1-FR-VrT" eventType="touchUpInside" id="lnh-Df-6xo"/>
                                 </connections>
                             </button>
+                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8oQ-dz-z4Q">
+                                <rect key="frame" x="259" y="66" width="100" height="38"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="aaS-P7-rCI">
+                                    <rect key="frame" x="0.0" y="0.0" width="100" height="38"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1SH-sf-qHd">
+                                            <rect key="frame" x="0.0" y="0.0" width="100" height="38"/>
+                                            <state key="normal" title="Photo">
+                                                <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="handleModeButton:" destination="BV1-FR-VrT" eventType="touchUpInside" id="cGU-ZN-vMR"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="trailing" secondItem="1SH-sf-qHd" secondAttribute="trailing" id="Wtc-YK-2wR"/>
+                                        <constraint firstAttribute="bottom" secondItem="1SH-sf-qHd" secondAttribute="bottom" id="eb1-fh-4QA"/>
+                                        <constraint firstItem="1SH-sf-qHd" firstAttribute="leading" secondItem="aaS-P7-rCI" secondAttribute="leading" id="fli-bJ-LT9"/>
+                                        <constraint firstItem="1SH-sf-qHd" firstAttribute="top" secondItem="aaS-P7-rCI" secondAttribute="top" id="xUX-Ac-YEc"/>
+                                    </constraints>
+                                </view>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="38" id="IMH-7u-lcB"/>
+                                    <constraint firstAttribute="width" constant="100" id="oyj-u3-TkA"/>
+                                </constraints>
+                                <blurEffect style="light"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="7"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </visualEffectView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -137,6 +171,7 @@
                             <constraint firstItem="fi7-4D-YGo" firstAttribute="leading" secondItem="aR7-8j-WbC" secondAttribute="leading" constant="16" id="4SA-Rz-Qw2"/>
                             <constraint firstItem="aEb-8g-6T3" firstAttribute="bottom" secondItem="aR7-8j-WbC" secondAttribute="bottom" id="654-pi-ied"/>
                             <constraint firstItem="WIN-cV-jRs" firstAttribute="top" secondItem="aR7-8j-WbC" secondAttribute="top" id="9hV-zQ-vDa"/>
+                            <constraint firstItem="8oQ-dz-z4Q" firstAttribute="top" secondItem="WIN-cV-jRs" secondAttribute="bottom" constant="8" id="JLP-Kc-v13"/>
                             <constraint firstItem="sB6-dr-j5d" firstAttribute="top" secondItem="aR7-8j-WbC" secondAttribute="top" id="LzW-76-Teu"/>
                             <constraint firstItem="aR7-8j-WbC" firstAttribute="trailing" secondItem="WIN-cV-jRs" secondAttribute="trailing" constant="16" id="M0a-E2-nLs"/>
                             <constraint firstItem="sB6-dr-j5d" firstAttribute="leading" secondItem="aR7-8j-WbC" secondAttribute="leading" constant="16" id="TTv-5s-JNy"/>
@@ -144,6 +179,7 @@
                             <constraint firstItem="aEb-8g-6T3" firstAttribute="trailing" secondItem="aR7-8j-WbC" secondAttribute="trailing" id="l1z-W1-1AU"/>
                             <constraint firstItem="RsA-Q2-h4J" firstAttribute="bottom" secondItem="aR7-8j-WbC" secondAttribute="bottom" id="pye-sO-7dd"/>
                             <constraint firstItem="RsA-Q2-h4J" firstAttribute="trailing" secondItem="aR7-8j-WbC" secondAttribute="trailing" id="qP1-38-MKl"/>
+                            <constraint firstItem="aR7-8j-WbC" firstAttribute="trailing" secondItem="8oQ-dz-z4Q" secondAttribute="trailing" constant="16" id="saS-aJ-Lgc"/>
                             <constraint firstItem="RsA-Q2-h4J" firstAttribute="top" secondItem="QCs-B3-uqP" secondAttribute="top" id="t5J-J5-rH7"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="aR7-8j-WbC"/>
@@ -151,6 +187,7 @@
                     <connections>
                         <outlet property="modeAssetButtonView" destination="sB6-dr-j5d" id="9bc-Td-8aC"/>
                         <outlet property="modelAssetButton" destination="9vd-17-DcZ" id="E9A-Bm-HCt"/>
+                        <outlet property="placementModeButtonView" destination="8oQ-dz-z4Q" id="s5X-yW-VJO"/>
                         <outlet property="sceneView" destination="RsA-Q2-h4J" id="n7f-iJ-Wgb"/>
                         <outlet property="sessionInfoLabel" destination="UAl-Vb-uhm" id="Fka-5C-ati"/>
                         <outlet property="sessionInfoView" destination="fi7-4D-YGo" id="IFX-En-Zdj"/>
