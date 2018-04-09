@@ -386,6 +386,8 @@ extension ViewController: ARSCNViewDelegate, ARSessionDelegate {
         case .limited(.initializing):
             message = "Initializing AR session."
             
+        case .limited(.relocalizing):
+            message = "Relocalizing."
         }
         
         sessionInfoLabel.text = message
