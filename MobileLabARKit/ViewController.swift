@@ -148,11 +148,10 @@ class ViewController: UIViewController {
             return
         }
 
-        // Get current session frame.
-        guard let currentFrame = sceneView.session.currentFrame else {
+        // Get point of view
+        guard let pov = sceneView.pointOfView else {
             return
         }
-
         
         // Space Placement: Places current selected model in 3d space.
         if isSpacePlacement {
@@ -160,10 +159,10 @@ class ViewController: UIViewController {
             translation.columns.3.z = -0.1
             
             let modelAsset = currentModelAsset.clone() as SCNNode
-            
-            let currentScale = modelAsset.simdScale
-            modelAsset.simdTransform = matrix_multiply(currentFrame.camera.transform, translation)
-            modelAsset.simdScale = currentScale
+
+            // Position and rotate relative to camera point of view.
+            modelAsset.simdPosition = pov.simdPosition + pov.simdWorldFront * 0.1
+            modelAsset.simdRotation = pov.simdRotation
             
             modelAsset.name = modelAssets.currentElement!.name
 
@@ -191,7 +190,6 @@ class ViewController: UIViewController {
             }
         }
     }
-
     
     // Button to cycle to next model to set as current.
     @IBAction func handleModelAssetButton(_ sender: UIButton) {
@@ -216,8 +214,8 @@ class ViewController: UIViewController {
 
     
     @IBAction func handlePhotoSnapshot(_ sender: UIButton) {
-        // Get current session frame.
-        guard let currentFrame = sceneView.session.currentFrame else {
+        // Get point of view
+        guard let pov = sceneView.pointOfView else {
             return
         }
 
@@ -230,10 +228,10 @@ class ViewController: UIViewController {
         
         let planeNode = SCNNode(geometry: imagePlane)
         sceneView.scene.rootNode.addChildNode(planeNode)
-        
-        var translation = matrix_identity_float4x4
-        translation.columns.3.z = -0.1
-        planeNode.simdTransform = matrix_multiply(currentFrame.camera.transform, translation)
+
+        // Position and rotate relative to camera point of view.
+        planeNode.simdPosition = pov.simdPosition + pov.simdWorldFront * 0.1
+        planeNode.simdRotation = pov.simdRotation
         
         modelsInScene.append(planeNode)
     }
